@@ -5,12 +5,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	vegeta "github.com/tsenart/vegeta/v12/lib"
 	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"time"
+
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 type Order struct {
@@ -24,6 +25,9 @@ type Product struct {
 }
 
 func main() {
+	url := os.Getenv("URL")
+	orderEndpoint := fmt.Sprintf("http://%s/api/orders", url)
+
 	users, err := readFile("./users.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -40,7 +44,7 @@ func main() {
 	targeter := func() vegeta.Targeter {
 		return func(target *vegeta.Target) error {
 			target.Method = http.MethodPost
-			target.URL = "http://35.240.243.150/api/orders"
+			target.URL = orderEndpoint
 			target.Header = http.Header{
 				"Content-Type":  []string{"application/json"},
 				"Authorization": {"Basic " + basicAuth(users[rand.Intn(len(users))], "")},
