@@ -67,6 +67,7 @@ func main() {
 	}()
 	attacker := vegeta.NewAttacker()
 
+	fmt.Println("Running loadtest....")
 	var metrics vegeta.Metrics
 	for res := range attacker.Attack(targeter, rate, duration, "Big Bang!") {
 		metrics.Add(res)
